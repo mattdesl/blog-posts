@@ -1,0 +1,26 @@
+{
+  "name": "blog-posts",
+  "version": "1.0.0",
+  "description": "Some blog posts",
+  "main": "index.js",
+  "license": "MIT",
+  "author": {
+    "name": "Matt DesLauriers",
+    "email": "dave.des@gmail.com",
+    "url": "https://github.com/mattdesl"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "node test.js"
+  },
+  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mattdesl/blog-posts.git"
+  },
+  "homepage": "https://github.com/mattdesl/blog-posts",
+  "bugs": {
+    "url": "https://github.com/mattdesl/blog-posts/issues"
+  }
+}
