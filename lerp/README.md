@@ -9,3 +9,9 @@ function lerp (start, end, t) {
 ```
 
 The examples use the Canvas2D for rendering, [canvas-sketch](https://github.com/mattdesl/canvas-sketch/) to organize the loop, and [canvas-sketch-util](https://github.com/mattdesl/canvas-sketch-util) for the linear interpolation utilities.
+
+## Blog Post
+
+See here:
+
+https://mattdesl.svbtle.com/linear-interpolation
