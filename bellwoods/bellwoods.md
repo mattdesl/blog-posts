@@ -12,6 +12,10 @@ The game was created for [JS13K Games](http://js13kgames.com/), a competition wh
 
 <iframe src="https://player.vimeo.com/video/289786573?title=0&byline=0&portrait=0" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
 
+<sup>*Gameplay video of Bellwoods.*</sup>
+
+
+
 In this post, I’ll talk about how I created Bellwoods and where I hope to take it next.
 
 
@@ -24,17 +28,17 @@ I've been wanting to build a game for a while now, and when I saw #JS13K tweets 
 
 # Concept
 
-My initial ideas for the game leaned heavily on the competition's “offline” theme, approaching it with a dark sci-fi angle. I thought it would be interesting to build a web game where you could only play by disconnecting your device from the internet. I even went as far as to design some rough mock-ups and a storyline for the game:
+My initial ideas for the game leaned heavily on the competition's “offline” theme. I thought it would be interesting to build a web game where you could only play by disconnecting your device from the internet. Alongside this novel game mechanic, a dark sci-fi concept seemed to fit naturally. I even went as far as to design some rough mock-ups and a storyline for the game:
 
 ![concept](./images/mockup.png)
 
-As I developed a tiny 3D engine for this idea, I wasn't entirely satisfied with the dark sci-fi look. I found vibrant colours more compelling, but they didn't feel right alongside such a gritty concept. You can see the progression of this in my [Twitter thread](https://twitter.com/mattdesl/status/1034187823367237633) during development.
+As I developed a tiny 3D engine for this idea, I wasn't entirely satisfied with the dark sci-fi look. I found vibrant colors more compelling, but they didn't feel right alongside such a gritty concept. You can see the progression of this in my [Twitter thread](https://twitter.com/mattdesl/status/1034187823367237633) during development.
 
 ![colors](./images/colors.png)
 
 <sup>*Testing random color palettes during an early iteration of the sci-fi concept.*</sup>
 
-One night, while brainstorming ideas for a geometric character, I realized a kite would be simple to render with just lines, and from that small thought, the entire direction of the game changed. It turned into a procedural “art game” with no specific goal or end-state, only meant to evoke a certain emotion in the player.
+One night, while brainstorming ideas for a geometric character, I realized a kite would be a simple shape to render with just lines, and from that small thought, the entire direction of the game changed. It turned into a procedural “art game” with no specific goal or end-state, only meant to evoke a certain emotion in the player.
 
 
 
@@ -49,6 +53,10 @@ At the core of the game is a tiny 3D engine that totals just a few kilobytes, us
 ### 3D Camera
 
 One of the first steps to building a homebrew 3D engine is defining a *virtual camera*. Many game cameras basically boil down to two functions: `project` and `unproject`. With projection, you take a 3D point in world space (i.e. some coordinate in your game's world) and convert it into a 2D point in screen space (i.e. some coordinate on your screen, in pixels). With unprojection, you do the reverse, converting a screen space coordinate into a world space coordinate.
+
+<iframe src="https://codesandbox.io/embed/l7kqwm7rwz?hidenavigation=1&view=preview" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin" scrolling="no"></iframe>
+
+<sup>*Example of a 3D orbiting camera using Canvas2D.*</sup>
 
 In Bellwoods, the virtual camera defines a `position` and `target`, both 3D coordinates in world space. This tells us where the camera is in space, and where it's looking. Together, those two coordinates make up what we will call the `view` matrix. We also define a `projection` matrix, which will give us 3D perspective and depth when converting 3D coordinates to 2D. Here is some simplified pseudo-code:
 
@@ -176,7 +184,7 @@ The last step in the audio is stacking up some filters: two reverb effects on th
 
 I ran into a couple audio gotchas that you might want to be aware of:
 
-- For whatever reason, oscillators with `"sine"` waveform type were producing off-frequency notes in my iPad. I fixed this by using a custom waveform that simulated a sine wave.
+- For whatever reason, oscillators with `"sine"` wave type were producing off-frequency notes in my iPad. I fixed this by using a custom waveform that simulated a sine wave.
 - A bug in my code was sending negative start time values to my synth, which was oddly muting the entire audio context intermittently, but only in Chrome. Probably best to ensure all your time values are equal or greater than `audioContext.currentTime`
 - If you are using exponential ramps, don't ramp down to zero – instead ramp to a very small number like 0.0001. I was running into silent errors and audio muting in Chrome when ramping down to zero.
 - If your attack is too quick on your synth, you will get a ‘popping’ sound in WebAudio. Even with longer attack times, it's hard to avoid popping in some devices (e.g. iPhone).
@@ -207,7 +215,7 @@ Mélissa and I spent a whole afternoon iterating on the 5-7-5 verse haiku. We tr
 > *following birds, chasing wind*
 > *in search of color*
 
-After so many days stuck in code, it was refreshing to spend time writing a poem, and in the end the haiku helped to tie the project together.
+After so many days stuck in code, it was refreshing to spend time writing a poem, and in the end the haiku helped tie the project together.
 
 
 
@@ -219,13 +227,13 @@ The 13 kilobytes constraint was not too debilitating, as it's 13 kilobytes *afte
 
 # Performance Optimizations
 
-Although the game's graphics are simple, it's submitting a lot of path operations per frame to draw all the terrain. The Canvas2D API is not so well suited for this sort of throughput, and if it weren't for the 13 kilobyte constraint, I would have used WebGL for the rendering (see also: [Drawing Lines is Hard](https://mattdesl.svbtle.com/drawing-lines-is-hard)).
+Although the game's graphics are simple, it's submitting a lot of 2D path operations per frame to draw all the terrain. The Canvas2D API is not so well suited for this sort of throughput, and if it weren't for the 13 kilobyte constraint, I would have used WebGL for the rendering (see also: [Drawing Lines is Hard](https://mattdesl.svbtle.com/drawing-lines-is-hard)).
 
 I spent a lot of time working on performance optimizations for the game. Here's some suggestions:
 
 - Re-use vectors where possible to avoid creating new arrays or objects within the game loop. Too many allocations per frame will lead to hitches during Garbage Collection (GC)
 - Batch Canvas2D state changes and draw operations where possible, and don't submit draw calls for elements that are nearly invisible to the user, e.g. very small circle radii or low opacity.
-- Use fixed-size pools where possible rather than creating and splicing elements from arrays.
+- Use fixed-size pools where possible rather than adding and removing elements from arrays.
 - Attempt to use all the real-time profiling & memory tools in Chrome & FireFox to highlight low-hanging fruit and find the largest bottlenecks. FireFox has a really handy Canvas2D profiler which lets you inspect all the draw calls in a frame.
 - Spread the creation of Reverb convolution buffers over many frames to avoid the main thread hanging on startup.
 - Use squared distance checks to avoid square roots where possible.
