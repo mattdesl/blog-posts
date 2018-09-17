@@ -244,7 +244,7 @@ I spent a lot of time working on performance optimizations for the game. Here's 
 
 # Next Steps
 
-![variations](/projects/2017/writing/blog-posts/bellwoods/images/colors-banner.png)
+![variations](./images/colors-banner.png)
 
 <sup>*Various procedurally generated color palettes from Bellwoods.*</sup>
 
